@@ -15,6 +15,44 @@
   <script src="./libs/jquery-1.12.4.min.js"></script>
   <!-- 引入bootstrap的js文件 -->
   <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+  <script>
+      //入口函数
+      $(function(){
+        //点击事件
+        $('.input_sub').on('click',function(e){
+          //取消默认动作
+          e.preventDefault();
+          //获取用户名和密码
+          var username = $('.input_txt').val().trim();
+          var password = $('.input_pass').val().trim();
+          //判断非空
+          if(username == '' || password == ''){
+            $('#myModal').modal();
+            $('.modal-body').text('用户名和密码为空');
+            return;
+          }
+          $.ajax({
+            type:'post',
+            url:window.BigNew.user_login,
+            data:{
+              username: username,
+              password:password
+            },
+            success:function(res){
+              $('.modal-body').text(res.msg);
+              $('#myModal').modal();
+              if(res.code == 200){
+                window.localStorage.setItem('token',res.token);
+                $('#myModal').on('hidden.bs.modal',function(e){
+                  window.location.href = './index.html';
+                })
+              }
+            }
+          
+          })
+        })
+      })
+    </script>
 </head>
 
 <body>
@@ -57,44 +95,7 @@
       </div>
     </div>
   <script src="./libs/http.js"></script>
-  <script>
-    //入口函数
-    $(function(){
-      //点击事件
-      $('.input_sub').on('click',function(e){
-        //取消默认动作
-        e.preventDefault();
-        //获取用户名和密码
-        var username = $('.input_txt').val().trim();
-        var password = $('.input_pass').val().trim();
-        //判断非空
-        if(username == '' || password == ''){
-          $('#myModal').modal();
-          $('.modal-body').text('用户名和密码为空');
-          return;
-        }
-        $.ajax({
-          type:'post',
-          url:window.BigNew.user_login,
-          data:{
-            username: username,
-            password:password
-          },
-          success:function(res){
-            $('.modal-body').text(res.msg);
-            $('#myModal').modal();
-            if(res.code == 200){
-              window.localStorage.setItem('token',res.token);
-              $('#mymodal').on('hidden.bs.modal',function(e){
-                window.location.href = './index.html';
-              })
-            }
-          }
-        
-        })
-      })
-    })
-  </script>
+  
 </body>
 
 </html>
