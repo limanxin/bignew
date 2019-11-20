@@ -76,7 +76,7 @@
                 success: function (res) {
                     // console.log(res);
                     if (res.code == 200) {
-                        for (key in res.data) {
+                        for (var key in res.data) {
                             $('input.' + key).val(res.data[key]);
                         }
                         //上传图片
@@ -92,21 +92,28 @@
             //给修改添加点击事件
             $('button.btn-edit').on('click', function (e) {
                 e.preventDefault();
-                var form = $('form')[0];
+                var form = $('#form')[0];
                 var userData = new FormData(form);
                 $.post({
                     url: BigNew.user_edit,
                     data: userData,
+                    contentType: false,
+                    processData: false,
                     success: function (res) {
                         if (res.code == 200) {
                             $.ajax({
                                 type: 'get',
                                 url: window.BigNew.user_info,
-                                success:function(res){
+                                success: function (res) {
                                     parent.$('.user_info>img').attr('src', res.data.userPic);
                                     parent.$('.user_info>span').html('欢迎&nbsp;&nbsp;' + res.data.nickname);
                                     parent.$('.user_center_link>img').attr('src', res.data.userPic)
+                                    //刷新子页面
                                     window.location.reload();
+                                    //删除token
+                                    window.localStorage.removeItem('token');
+                                    //回到登陆页面
+                                    window.location.href = './login.html';
                                 }
                             })
                         }
